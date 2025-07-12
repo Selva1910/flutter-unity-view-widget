@@ -25,7 +25,7 @@ namespace FlutterUnityIntegration.Editor
         private static readonly string WebExportPath = Path.GetFullPath(Path.Combine(ProjectPath, "../../web/UnityLibrary"));
         private static readonly string IOSExportPluginPath = Path.GetFullPath(Path.Combine(ProjectPath, "../../ios_xcode/UnityLibrary"));
 
-        private bool _pluginMode = false;
+        private static bool _pluginMode = false;
         private static string _persistentKey = "flutter-unity-widget-pluginMode";
 
         private const string USING_ADDRESSABLES = "USING_ADDRESSABLES";
@@ -148,6 +148,30 @@ namespace FlutterUnityIntegration.Editor
                 Repaint();
             }
 
+
+            // Web Export Path
+            using (var horizontalScope = new GUILayout.HorizontalScope())
+            {
+                EditorGUILayout.LabelField("WebGL Export Path", GUILayout.Width(150));
+                GUI.enabled = false;
+                EditorGUILayout.TextField(BuildPathsHelper.Overriden_WebExportPath);
+                GUI.enabled = true;
+
+                if (GUILayout.Button("...", GUILayout.Width(30)))
+                {
+                    string selectedPath = EditorUtility.OpenFolderPanel("Select WebGL Export Folder", "", "");
+                    if (!string.IsNullOrEmpty(selectedPath))
+                    {
+                        selectedPath = Path.Combine(selectedPath, "UnityLibrary");
+                        BuildPathsHelper.Overriden_WebExportPath = selectedPath;
+                    }
+
+                    EditorPrefs.SetString(BuildPathsHelper._persistentWebExportPath, selectedPath);
+                }
+            }
+
+            GUI.enabled = false;
+
             if (_overrideBuildPaths)
             {
                 // Android Export Path
@@ -157,32 +181,41 @@ namespace FlutterUnityIntegration.Editor
 
                     GUI.enabled = false;
                     EditorGUILayout.TextField(BuildPathsHelper.Overriden_AndroidExportPath);
-                    GUI.enabled = true;
+                    //GUI.enabled = true;
 
                     if (GUILayout.Button("...", GUILayout.Width(30)))
                     {
                         string selectedPath = EditorUtility.OpenFolderPanel("Select Android Export Folder", "", "unityLibrary");
                         if (!string.IsNullOrEmpty(selectedPath))
+                        {
+                            selectedPath = Path.Combine(selectedPath, "UnityLibrary");
                             BuildPathsHelper.Overriden_AndroidExportPath = selectedPath;
+                        }
+                        EditorPrefs.SetString(BuildPathsHelper.Overriden_AndroidExportPath, selectedPath);
                     }
                 }
 
-                // Windows Export Path
-                using (var horizontalScope = new GUILayout.HorizontalScope())
-                {
-                    EditorGUILayout.LabelField("Windows Export Path", GUILayout.Width(150));
+                // Windows Export Path 
 
-                    GUI.enabled = false;
-                    EditorGUILayout.TextField(BuildPathsHelper.Overriden_WindowsExportPath);
-                    GUI.enabled = true;
+                //using (var horizontalScope = new GUILayout.HorizontalScope())
+                //{
+                //    EditorGUILayout.LabelField("Windows Export Path", GUILayout.Width(150));
 
-                    if (GUILayout.Button("...", GUILayout.Width(30)))
-                    {
-                        string selectedPath = EditorUtility.OpenFolderPanel("Select Windows Export Folder", "", "");
-                        if (!string.IsNullOrEmpty(selectedPath))
-                            BuildPathsHelper.Overriden_WindowsExportPath = selectedPath;
-                    }
-                }
+                //    GUI.enabled = false;
+                //    EditorGUILayout.TextField(BuildPathsHelper.Overriden_WindowsExportPath);
+                //    GUI.enabled = true;
+
+                //    if (GUILayout.Button("...", GUILayout.Width(30)))
+                //    {
+                //        string selectedPath = EditorUtility.OpenFolderPanel("Select Windows Export Folder", "", "");
+                //        if (!string.IsNullOrEmpty(selectedPath))
+                //        {
+                //            selectedPath = Path.Combine(selectedPath, "UnityLibrary");
+                //            BuildPathsHelper.Overriden_WindowsExportPath = selectedPath;
+                //        }
+                //        EditorPrefs.SetString(BuildPathsHelper._persistentWindowsExportPath, selectedPath);
+                //    }
+                //}
 
                 // iOS Export Path
                 using (var horizontalScope = new GUILayout.HorizontalScope())
@@ -191,32 +224,20 @@ namespace FlutterUnityIntegration.Editor
 
                     GUI.enabled = false;
                     EditorGUILayout.TextField(BuildPathsHelper.Overriden_IOSExportPath);
-                    GUI.enabled = true;
+                    //GUI.enabled = true;
 
                     if (GUILayout.Button("...", GUILayout.Width(30)))
                     {
                         string selectedPath = EditorUtility.OpenFolderPanel("Select iOS Export Folder", "", "");
                         if (!string.IsNullOrEmpty(selectedPath))
+                        {
+                            selectedPath = Path.Combine(selectedPath, "UnityLibrary");
                             BuildPathsHelper.Overriden_IOSExportPath = selectedPath;
+                        }
+                        EditorPrefs.SetString(BuildPathsHelper._persistentIOSExportPath, selectedPath);
                     }
                 }
 
-                // Web Export Path
-                using (var horizontalScope = new GUILayout.HorizontalScope())
-                {
-                    EditorGUILayout.LabelField("WebGL Export Path", GUILayout.Width(150));
-
-                    GUI.enabled = false;
-                    EditorGUILayout.TextField(BuildPathsHelper.Overriden_WebExportPath);
-                    GUI.enabled = true;
-
-                    if (GUILayout.Button("...", GUILayout.Width(30)))
-                    {
-                        string selectedPath = EditorUtility.OpenFolderPanel("Select WebGL Export Folder", "", "");
-                        if (!string.IsNullOrEmpty(selectedPath))
-                            BuildPathsHelper.Overriden_WebExportPath = selectedPath;
-                    }
-                }
 
                 // iOS Plugin Export Path
                 using (var horizontalScope = new GUILayout.HorizontalScope())
@@ -225,16 +246,21 @@ namespace FlutterUnityIntegration.Editor
 
                     GUI.enabled = false;
                     EditorGUILayout.TextField(BuildPathsHelper.Overriden_IOSExportPluginPath);
-                    GUI.enabled = true;
+                    //GUI.enabled = true;
 
                     if (GUILayout.Button("...", GUILayout.Width(30)))
                     {
                         string selectedPath = EditorUtility.OpenFolderPanel("Select iOS Plugin Folder", "", "");
                         if (!string.IsNullOrEmpty(selectedPath))
+                        {
+                            selectedPath = Path.Combine(selectedPath, "UnityLibrary");
                             BuildPathsHelper.Overriden_IOSExportPluginPath = selectedPath;
+                        }
+                        EditorPrefs.SetString(BuildPathsHelper._persistentIOSExportPluginPath, selectedPath);
                     }
 
                 }
+                GUI.enabled = true;
 
             }
 
@@ -252,10 +278,17 @@ namespace FlutterUnityIntegration.Editor
 
         private void OnEnable()
         {
+            InitPrefs();
+        }
+
+        private static void InitPrefs()
+        {
             _pluginMode = EditorPrefs.GetBool(_persistentKey, false);
             _usingAddressables = EditorPrefs.GetBool(_persistentKeyHasAddressable, false);
             _overrideBuildPaths = EditorPrefs.GetBool(_persistentOverrideStatus, false);
+            BuildPathsHelper.Overriden_WebExportPath = EditorPrefs.GetString(BuildPathsHelper._persistentWebExportPath, BuildPathsHelper.Overriden_WebExportPath);
         }
+
         //#endregion
 
 
@@ -295,8 +328,10 @@ namespace FlutterUnityIntegration.Editor
 
         private static void BuildWebGL(String path)
         {
+            InitPrefs();
 
-            if (!EditorPrefs.GetBool(_persistentOverrideStatus,false))
+
+            if (_overrideBuildPaths)
             {
                 // Check if the Unity project is in the expected location
                 if (!IsProjectLocationValid(path, "web"))
@@ -315,6 +350,8 @@ namespace FlutterUnityIntegration.Editor
 
             if (Directory.Exists(WebExportPath))
                 Directory.Delete(WebExportPath, true);
+
+
 
             // EditorUserBuildSettings. = true;
 
@@ -340,14 +377,20 @@ namespace FlutterUnityIntegration.Editor
 
         private static void DoBuildAndroid(String buildPath, bool isPlugin, bool isReleaseBuild)
         {
-            // Check if the Unity project is in the expected location
-            if (!IsProjectLocationValid(AndroidExportPath, "android"))
-            {
-                return;
-            }
+            InitPrefs();
 
+            if (_overrideBuildPaths)
+            {
+                // Check if the Unity project is in the expected location
+                if (!IsProjectLocationValid(AndroidExportPath, "android"))
+                {
+                    return;
+                }
+            }
             // Switch to Android standalone build.
             EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Android, BuildTarget.Android);
+
+
 
             if (Directory.Exists(APKPath))
                 Directory.Delete(APKPath, true);
@@ -414,8 +457,11 @@ namespace FlutterUnityIntegration.Editor
 
         private static void ModifyWebGLExport()
         {
+
+            var path = _overrideBuildPaths ? BuildPathsHelper.Overriden_WebExportPath : WebExportPath;
+
             // Modify index.html
-            var indexFile = Path.Combine(WebExportPath, "index.html");
+            var indexFile = Path.Combine(path, "index.html");
             var indexHtmlText = File.ReadAllText(indexFile);
 
             indexHtmlText = indexHtmlText.Replace("<script>", @"
@@ -462,7 +508,7 @@ namespace FlutterUnityIntegration.Editor
             File.WriteAllText(indexFile, indexHtmlText);
 
             /// Modidy style.css
-            var cssFile = Path.Combine($"{WebExportPath}/TemplateData", "style.css");
+            var cssFile = Path.Combine($"{(_overrideBuildPaths ? BuildPathsHelper.Overriden_WebExportPath : WebExportPath)}/TemplateData", "style.css");
             var fullScreenCss = File.ReadAllText(cssFile);
             fullScreenCss = @"
 body { padding: 0; margin: 0; overflow: hidden; }
